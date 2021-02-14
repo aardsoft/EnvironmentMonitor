@@ -54,12 +54,10 @@ class EnvironmentMonitor {
   public:
     EnvironmentMonitor();
     bool begin();
-    void setupWatchdog();
 #if ENVIRONMENTMONITOR_LPM > 0
     void sleep();
 #endif
     measurement* data(byte *ptr);
-    char* id();
     bool pollSensors();
     bool hasBMP085();
     bool hasMCP9808();

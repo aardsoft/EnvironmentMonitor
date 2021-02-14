@@ -11,38 +11,12 @@
 
 #include "EnvironmentMonitor.h"
 
-#include <avr/power.h>
-#include <avr/sleep.h>
-#include <avr/wdt.h>
-
-ISR(WDT_vect){
-}
-
 EnvironmentMonitor::EnvironmentMonitor(){
 }
 
 bool EnvironmentMonitor::begin(){
   // TODO: check configuration structure with sensor data
   startSensors();
-}
-
-void EnvironmentMonitor::setupWatchdog(){
-  noInterrupts();
-
-  // Set the watchdog reset bit in the MCU status register to 0.
-  MCUSR &= ~(1<<WDRF);
-
-  // Set WDCE and WDE bits in the watchdog control register.
-  WDTCSR |= (1<<WDCE) | (1<<WDE);
-
-  // Set watchdog clock prescaler bits to a value of 8 seconds.
-  WDTCSR = (1<<WDP0) | (1<<WDP3);
-
-  // Enable watchdog as interrupt only (no reset).
-  WDTCSR |= (1<<WDIE);
-
-  // Enable interrupts again.
-  interrupts();
 }
 
 #if ENVIRONMENTMONITOR_LPM > 0
@@ -57,11 +31,6 @@ void EnvironmentMonitor::sleep(){
 measurement* EnvironmentMonitor::data(byte *ptr){
   *ptr = m_data_p;
   return m_data;
-}
-
-char* EnvironmentMonitor::id(){
-  // FIXME
-  return "";
 }
 
 bool EnvironmentMonitor::pollSensors(){
