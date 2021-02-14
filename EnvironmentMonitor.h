@@ -20,10 +20,26 @@
 #define ENVIRONMENTMONITOR_SENSOR_DHT22 0
 #endif
 
+#ifndef ENVIRONMENTMONITOR_SENSOR_RAIN
+#define ENVIRONMENTMONITOR_SENSOR_RAIN 0
+#endif
+
+#ifndef ENVIRONMENTMONITOR_RAIN_INPUT
+#define ENVIRONMENTMONITOR_RAIN_INPUT 8
+#endif
+
+#ifndef ENVIRONMENTMONITOR_RAIN_OUTPUT
+#define ENVIRONMENTMONITOR_RAIN_OUTPUT 3
+#endif
+
 // the purpose for this is to keep history on unreliable transmission media as
 // well as being able to calculate averages
 #ifndef ENVIRONMENTMONITOR_HISTORY_LENGTH
 #define ENVIRONMENTMONITOR_HISTORY_LENGTH 1
+#endif
+
+#ifndef ENVIRONMENTMONITOR_SENSOR_IDENTIFIER
+#define ENVIRONMENTMONITOR_SENSOR_IDENTIFIER 0
 #endif
 
 #include "EnvironmentMonitor_types.h"

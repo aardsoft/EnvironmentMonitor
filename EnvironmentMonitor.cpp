@@ -46,9 +46,13 @@ bool EnvironmentMonitor::pollSensors(){
 
 #if ENVIRONMENTMONITOR_SENSOR_MCP9808 > 0
   if (sensors.mcp9808){
-    //mcp9808.shutdown_wake(0);
+#if ENVIRONMENTMONITOR_LPM > 0
+    mcp9808.shutdown_wake(0);
+#endif
     m_data[m_data_p].mcp9808.temperature = mcp9808.readTempC();
-    //mcp9808.shutdown_wake(1);
+#if ENVIRONMENTMONITOR_LPM > 0
+    mcp9808.shutdown_wake(1);
+#endif
   }
 #endif
 
@@ -56,6 +60,16 @@ bool EnvironmentMonitor::pollSensors(){
   if (sensors.dht22){
     m_data[m_data_p].dht22.temperature = dht22.readTemperature();
     m_data[m_data_p].dht22.humidity = dht22.readHumidity();
+  }
+#endif
+
+#if ENVIRONMENTMONITOR_SENSOR_RAIN > 0
+  // we can't autodetect presence of the rain sensor, so just read values if
+  // it is compiled in.
+  if (digitalRead(ENVIRONMENTMONITOR_RAIN_INPUT) == LOW){
+    m_data[m_data_p].rain.rain = analogRead(ENVIRONMENTMONITOR_RAIN_INPUT);
+  } else {
+    m_data[m_data_p].rain.rain = 0;
   }
 #endif
 
@@ -80,6 +94,12 @@ void EnvironmentMonitor::startSensors(){
 #if ENVIRONMENTMONITOR_SENSOR_DHT22 > 0
   dht22.begin();
   sensors.dht22 = true;
+#endif
+#if ENVIRONMENTMONITOR_SENSOR_RAIN > 0
+  // rain sensor
+  pinMode(ENVIRONMENTMONITOR_RAIN_INPUT, INPUT);
+  // rain sensor voltage
+  pinMode(ENVIRONMENTMONITOR_RAIN_OUTPUT, OUTPUT);
 #endif
 }
 
