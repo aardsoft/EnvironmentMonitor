@@ -6,8 +6,6 @@
  */
 
 #include <Arduino.h>
-#include <EEPROM.h>
-#include <MACTool.h>
 
 #include "EnvironmentMonitor.h"
 
@@ -17,6 +15,7 @@ EnvironmentMonitor::EnvironmentMonitor(){
 bool EnvironmentMonitor::begin(){
   // TODO: check configuration structure with sensor data
   startSensors();
+  return true;
 }
 
 #if ENVIRONMENTMONITOR_LPM > 0
@@ -40,7 +39,8 @@ bool EnvironmentMonitor::pollSensors(){
 #if ENVIRONMENTMONITOR_SENSOR_BMP085 > 0
   if (sensors.bmp085){
     m_data[m_data_p].bmp085.temperature = bmp.readTemperature();
-    m_data[m_data_p].bmp085.pressure = bmp.readPressure();
+    // store the pressure in easier to use hPA
+    m_data[m_data_p].bmp085.pressure = bmp.readPressure()/100.0;
   }
 #endif
 

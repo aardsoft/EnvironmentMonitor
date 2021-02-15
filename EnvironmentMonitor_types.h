@@ -10,17 +10,17 @@
 
 #if ENVIRONMENTMONITOR_SENSOR_BMP085 > 0
 typedef struct {
-#if ENVIRONMENTMONITOR_SENSOR_IDENTIFIER >0
+#if ENVIRONMENTMONITOR_SENSOR_IDENTIFIER > 0
     char type = 'b';
 #endif
     float temperature = 0;
-    uint32_t pressure = 0;
+    float pressure = 0;
 } _bmp085;
 #endif
 
 #if ENVIRONMENTMONITOR_SENSOR_MCP9808 > 0
 typedef struct {
-#if ENVIRONMENTMONITOR_SENSOR_IDENTIFIER >0
+#if ENVIRONMENTMONITOR_SENSOR_IDENTIFIER > 0
     char type = 'm';
 #endif
     float temperature = 0;
@@ -29,7 +29,7 @@ typedef struct {
 
 #if ENVIRONMENTMONITOR_SENSOR_DHT22 > 0
 typedef struct {
-#if ENVIRONMENTMONITOR_SENSOR_IDENTIFIER >0
+#if ENVIRONMENTMONITOR_SENSOR_IDENTIFIER > 0
     char type = 'd';
 #endif
     float temperature = 0;
@@ -39,7 +39,7 @@ typedef struct {
 
 #if ENVIRONMENTMONITOR_SENSOR_RAIN > 0
 typedef struct {
-#if ENVIRONMENTMONITOR_SENSOR_IDENTIFIER >0
+#if ENVIRONMENTMONITOR_SENSOR_IDENTIFIER > 0
     char type = 'r';
 #endif
     uint32_t rain = 0;
