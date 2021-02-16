@@ -10,20 +10,6 @@ Currently supported sensors are:
 - [[https://learn.adafruit.com/adafruit-mcp9808-precision-i2c-temperature-sensor-guide/overview][MCP9808 temperature sensors]], connected via i²c. Requires the [[https://github.com/adafruit/Adafruit_MCP9808_Library][MCP9808 library]] in the Arduino library folder.
 - [[https://www.adafruit.com/product/385][DHT22 humidity sensors.]] Requires the [[https://github.com/adafruit/DHT-sensor-library][DHT sensor library]] in the Arduino library folder
 
-** Dependencies
-*** PersistentConfiguration library
+For more details on the hardware setup check the [[https://github.com/aardsoft/mqtt_sensor#sensors][mqtt_sensor hardware section]]. mqtt_sensor currently is the main user of this library.
 
-*** MACTool library
-
-
-** Configuration
-https://www.thingiverse.com/thing:3114668
-** Hardware configuration
-*** DHT11
-GND, 5V, digital pin (selectable)
-*** MCP9803
-GND, 5V, SCL, SDA (A4/A5)
-*** BMP085
-GND, 5V, SCL, SDA (A4/A5)
-*** Rain sensor
-GND, 5V, digital pin (selectable), analogue pin (selectable)
+For building an outside sensor station a [[https://www.thingiverse.com/thing:3114668][Stevenson screen]] style enclosure is recommended.
