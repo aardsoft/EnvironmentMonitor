@@ -8,8 +8,23 @@
 #ifndef _ENVIRONMENTMONITOR_H
 #define _ENVIRONMENTMONITOR_H
 
+#define L_Adafruit 1
+#define L_Bosch 2
+#define L_SparkFun 3
+#define L_Glenn 4
+#define L_Forced 5
+
+
 #ifndef ENVIRONMENTMONITOR_SENSOR_BMP085
 #define ENVIRONMENTMONITOR_SENSOR_BMP085 0
+#endif
+
+#ifndef ENVIRONMENTMONITOR_SENSOR_BME280
+#define ENVIRONMENTMONITOR_SENSOR_BME280 0
+#endif
+
+#ifndef ENVIRONMENTMONITOR_BME_LIBRARY
+#define ENVIRONMENTMONITOR_BME_LIBRARY L_Adafruit
 #endif
 
 #ifndef ENVIRONMENTMONITOR_SENSOR_MCP9808
@@ -52,6 +67,20 @@
 #include <Adafruit_BMP085.h>
 #endif
 
+#if ENVIRONMENTMONITOR_SENSOR_BME280 > 0
+ #if ENVIRONMENTMONITOR_BME_LIBRARY == L_Adafruit
+#include <Adafruit_BME280.h>
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Bosch
+#include <Bme280BoschWrapper.h>
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Glenn
+#include <BME280I2C.h>
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_SparkFun
+#include <SparkFunBME280.h>
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Forced
+#include <forcedClimate.h>
+ #endif
+#endif
+
 #if ENVIRONMENTMONITOR_SENSOR_MCP9808 > 0
 #include <Adafruit_MCP9808.h>
 #endif
@@ -76,6 +105,7 @@ class EnvironmentMonitor {
     measurement* data(byte *ptr);
     bool pollSensors();
     bool hasBMP085();
+    bool hasBME280();
     bool hasMCP9808();
     bool hasDHT22();
 
@@ -89,6 +119,22 @@ State m_state;
     // fixme: make it easy to enumerate connected sensors
 #if ENVIRONMENTMONITOR_SENSOR_BMP085 > 0
     Adafruit_BMP085 bmp;
+#endif
+#if ENVIRONMENTMONITOR_SENSOR_BME280 > 0
+ #if ENVIRONMENTMONITOR_BME_LIBRARY == L_Adafruit
+    Adafruit_BME280 bme;
+    Adafruit_Sensor *bme_temp = bme.getTemperatureSensor();
+    Adafruit_Sensor *bme_pressure = bme.getPressureSensor();
+    Adafruit_Sensor *bme_humidity = bme.getHumiditySensor();
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Bosch
+    Bme280BoschWrapper bme = Bme280BoschWrapper(true);
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Glenn
+    BME280I2C bme;
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_SparkFun
+    BME280 bme;
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Forced
+    ForcedClimate bme = ForcedClimate();
+ #endif
 #endif
 #if ENVIRONMENTMONITOR_SENSOR_MCP9808 > 0
     Adafruit_MCP9808 mcp9808 = Adafruit_MCP9808();

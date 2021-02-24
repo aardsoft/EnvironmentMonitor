@@ -7,6 +7,12 @@
 
 #include <Arduino.h>
 
+#if ENVIRONMENTMONITOR_SENSOR_BME280 > 0
+ #if ENVIRONMENTMONITOR_BME_LIBRARY == L_Glenn || ENVIRONMENTMONITOR_BME_LIBRARY == L_SparkFun
+#include <Wire.h>
+ #endif
+#endif
+
 #include "EnvironmentMonitor.h"
 
 EnvironmentMonitor::EnvironmentMonitor(){
@@ -41,6 +47,44 @@ bool EnvironmentMonitor::pollSensors(){
     m_data[m_data_p].bmp085.temperature = bmp.readTemperature();
     // store the pressure in easier to use hPA
     m_data[m_data_p].bmp085.pressure = bmp.readPressure()/100.0;
+  }
+#endif
+
+#if ENVIRONMENTMONITOR_SENSOR_BME280 > 0
+  if (sensors.bme280){
+ #if ENVIRONMENTMONITOR_BME_LIBRARY == L_Adafruit
+    m_data[m_data_p].bme280.temperature = bme.readTemperature();
+      // store the pressure in easier to use hPA
+    m_data[m_data_p].bme280.pressure = bme.readPressure()/100.0;
+    m_data[m_data_p].bme280.humidity = bme.readHumidity();
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Bosch
+    bool ok = bme.measure();
+    if (ok){
+      m_data[m_data_p].bme280.temperature = bme.getTemperature()/100.0;
+      // store the pressure in easier to use hPA
+      m_data[m_data_p].bme280.pressure = bme.getPressure()/100.0;
+      m_data[m_data_p].bme280.humidity = bme.getHumidity()/1024.0;
+    }
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Glenn
+    BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
+    BME280::PresUnit presUnit(BME280::PresUnit_Pa);
+
+    bme.read(m_data[m_data_p].bme280.pressure,
+             m_data[m_data_p].bme280.temperature,
+             m_data[m_data_p].bme280.humidity,
+             tempUnit,
+             presUnit);
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_SparkFun
+    m_data[m_data_p].bme280.temperature = bme.readTempC();
+      // store the pressure in easier to use hPA
+    m_data[m_data_p].bme280.pressure = bme.readFloatPressure()/100.0;
+    m_data[m_data_p].bme280.humidity = bme.readFloatHumidity();
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Forced
+    bme.takeForcedMeasurement();
+    m_data[m_data_p].bme280.temperature = bme.getTemperatureCelcius();
+    m_data[m_data_p].bme280.pressure = bme.getPressure();
+    m_data[m_data_p].bme280.humidity = bme.getRelativeHumidity();
+ #endif
   }
 #endif
 
@@ -87,6 +131,28 @@ void EnvironmentMonitor::startSensors(){
   if (bmp.begin())
     sensors.bmp085 = true;
 #endif
+#if ENVIRONMENTMONITOR_SENSOR_BME280 > 0
+ #if ENVIRONMENTMONITOR_BME_LIBRARY == L_Adafruit
+  if (bme.begin())
+    sensors.bme280 = true;
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Bosch
+  if (bme.beginI2C(0x77))
+    sensors.bme280 = true;
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Glenn
+  Wire.begin();
+  if (bme.begin())
+    sensors.bme280 = true;
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_SparkFun
+  Wire.begin();
+  if (bme.beginI2C())
+    sensors.bme280 = true;
+ #elif ENVIRONMENTMONITOR_BME_LIBRARY == L_Forced
+  Wire.begin();
+  bme.begin();
+  // forced sensor doesn't check availability
+  sensors.bme280 = true;
+ #endif
+#endif
 #if ENVIRONMENTMONITOR_SENSOR_MCP9808 > 0
   if (mcp9808.begin())
     sensors.mcp9808 = true;
@@ -106,6 +172,14 @@ void EnvironmentMonitor::startSensors(){
 bool EnvironmentMonitor::hasBMP085(){
 #if ENVIRONMENTMONITOR_SENSOR_BMP085 > 0
   return sensors.bmp085;
+#else
+  return false;
+#endif
+}
+
+bool EnvironmentMonitor::hasBME280(){
+#if ENVIRONMENTMONITOR_SENSOR_BME280 > 0
+  return sensors.bme280;
 #else
   return false;
 #endif

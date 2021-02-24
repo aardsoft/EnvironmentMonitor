@@ -18,6 +18,17 @@ typedef struct {
 } _bmp085;
 #endif
 
+#if ENVIRONMENTMONITOR_SENSOR_BME280 > 0
+typedef struct {
+#if ENVIRONMENTMONITOR_SENSOR_IDENTIFIER > 0
+    char type = 'b';
+#endif
+    float temperature = 0;
+    float pressure = 0;
+    float humidity = 0;
+} _bme280;
+#endif
+
 #if ENVIRONMENTMONITOR_SENSOR_MCP9808 > 0
 typedef struct {
 #if ENVIRONMENTMONITOR_SENSOR_IDENTIFIER > 0
@@ -50,6 +61,9 @@ typedef struct {
 #if ENVIRONMENTMONITOR_SENSOR_BMP085 > 0
     _bmp085 bmp085;
 #endif
+#if ENVIRONMENTMONITOR_SENSOR_BME280 > 0
+    _bme280 bme280;
+#endif
 #if ENVIRONMENTMONITOR_SENSOR_MCP9808 > 0
     _mcp9808 mcp9808;
 #endif
@@ -68,6 +82,9 @@ typedef struct {
 struct {
 #if ENVIRONMENTMONITOR_SENSOR_BMP085 > 0
     bool bmp085 = false;
+#endif
+#if ENVIRONMENTMONITOR_SENSOR_BME280 > 0
+    bool bme280 = false;
 #endif
 #if ENVIRONMENTMONITOR_SENSOR_MCP9808 > 0
     bool mcp9808 = false;
